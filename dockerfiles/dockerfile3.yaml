@@ -1,0 +1,10 @@
+# Use the official CockroachDB image
+FROM cockroachdb/cockroach:v24.1.0
+
+# Expose CockroachDB ports:
+# 26257 - for SQL clients
+# 8080 - for the admin UI
+EXPOSE 26257 8080
+
+# Default command: run in single-node insecure mode (for dev/test)
+CMD ["start-single-node", "--insecure"]
