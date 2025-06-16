@@ -1,0 +1,17 @@
+# Use official JBoss WildFly base image
+FROM jboss/wildfly:latest
+
+# Remove existing default applications (optional)
+RUN rm -rf /opt/jboss/wildfly/standalone/deployments/*
+
+# Copy your WAR file into the deployments directory
+COPY raviLogin/target/raviLogin-1.0.war /opt/jboss/wildfly/standalone/deployments/ROOT.war
+
+# Mark the WAR as deployable (WildFly watches for .dodeploy file)
+RUN touch /opt/jboss/wildfly/standalone/deployments/ROOT.war.dodeploy
+
+# Expose ports
+EXPOSE 8080 9990
+
+# Start JBoss/WildFly
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0"]
