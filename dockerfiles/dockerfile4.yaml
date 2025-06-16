@@ -1,0 +1,23 @@
+FROM cockroachdb/cockroach:v24.1.0
+
+# Set working directory
+WORKDIR /cockroach
+
+# Create certs directory
+RUN mkdir -p /cockroach/certs
+
+# Generate CA certificate
+RUN cockroach cert create-ca --certs-dir=certs --ca-key=certs/ca.key
+
+# Generate node certificate (for host: localhost)
+RUN cockroach cert create-node localhost 127.0.0.1 ::1 \
+    --certs-dir=certs --ca-key=certs/ca.key
+
+# Generate client certificate for 'root' user
+RUN cockroach cert create-client root --certs-dir=certs --ca-key=certs/ca.key
+
+# Expose Cockroach ports
+EXPOSE 26257 8080
+
+# Start CockroachDB in secure mode
+CMD ["start-single-node", "--certs-dir=certs", "--advertise-addr=localhost"]
